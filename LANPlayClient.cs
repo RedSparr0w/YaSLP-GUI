@@ -179,17 +179,20 @@ namespace LANPlayClient
 		{
 			WebClient wc = new WebClient();
 			string url = "http://"+this.drp_srvlist.SelectedItem.ToString()+"/info";
-			Stopwatch timer = new Stopwatch();
+            //string dotnet = "http://"+this.drp_srvlist.SelectedItem.ToString();                   DotNet Server Intigration
+            Stopwatch timer = new Stopwatch();
 			timer.Start();
 			byte[] raw = wc.DownloadData(url);
-			timer.Stop();
+            timer.Stop();
 			string webData = Encoding.UTF8.GetString(raw);
-			string[] DataArray = webData.Split(new char[] { ':' });
-			Label lblPing = this.lbl_ping;
+            //string webDataDotnet = Encoding.UTF8.GetString(raw2);                                 DotNet Server Intigration
+            string[] DataArray = webData.Split(new char[] { ':' });
+            //string[] DataArray2 = webDataDotnet.Split(new char[] { ':' });                        DotNet Server Intigration
+            Label lblPing = this.lbl_ping;
 			long elapsedMilliseconds = timer.ElapsedMilliseconds;
 			lblPing.Text = string.Concat(elapsedMilliseconds.ToString(), " ms");
 			timer.Reset();
-			if (!webData.Contains("rust"))
+			if (webData.Contains("alpha"))
 			{
 				string srvver = DataArray[2].Substring(1, DataArray[2].IndexOf('\"', 1) - 1);
 				string useronline = DataArray[1].Substring(0, DataArray[1].IndexOf(","));
@@ -200,7 +203,7 @@ namespace LANPlayClient
 				this.lbl_usronl.Text = useronline;
 				this.lbl_srvtyp.Text = "N/A";
 			}
-			else
+			if (webData.Contains("rust"))
 			{
 				this.lbl_srvtyp.Text = "Rust";
 				string srvver = DataArray[3].Substring(1, DataArray[3].IndexOf('\"', 1) - 1);
@@ -212,6 +215,17 @@ namespace LANPlayClient
 				this.lbl_usract.Text = (useronline - useridle).ToString();
 				this.lbl_srvver.Text = srvver;
 			}
+            /* if (webData.Contains("dotnet"))                                                      DotNet Server Inigration
+            {
+                //string srvver = DataArray2[2].Substring(1, DataArray2[2].IndexOf('\"', 1) - 1);
+                //string useronline = DataArray2[1].Substring(0, DataArray2[1].IndexOf(","));
+                this.lbl_srvstatus.Text = "online";
+                this.lbl_srvver.Text = "N/A";
+                this.lbl_usract.Text = "N/A";
+                this.lbl_usridl.Text = "N/A";
+                this.lbl_usronl.Text = "N/A";
+                this.lbl_srvtyp.Text = "N/A";
+            }*/
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
